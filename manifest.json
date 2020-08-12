@@ -1,0 +1,22 @@
+{
+	"manifest_version": 2,
+	"name": "One-click logout",
+	"version": "0.1",
+	"description": "Provides one-click logout from popular services",
+	"default_locale": "en",
+ 	"icons": {
+		"32": "ocl_32.png",
+		"64": "ocl_64.png"
+	},
+	"permissions": [
+		"https://accounts.google.com/Logout",
+		"activeTab"
+	],
+	"browser_action": {
+		"default_title": "One-click logout",
+		"default_icon": "64.png",
+		"default_popup" : "popup.html"
+	},
+	
+	"homepage_url": "https://github.com/automatize-it/CHANGEME"
+}
