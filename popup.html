@@ -7,21 +7,48 @@
 		font-family: Arial;
 		font-size: 12pt;
 	}
+	
+	div.itemstr{
+		
+		white-space: nowrap; 
+		display: block;
+	}
+	
+	img.logo{
+		
+		float: left; 
+		margin-right: 0.3em;
+	}
+	
+	div.statstr{
+		
+		margin-bottom: 1em;
+	}
+	
+	input[type=checkbox] {
+		transform: scale(1.5);
+		float:left;
+		margin-right: 0.5em;
+	}
+	
+	h3 {
+	
+		margin: 0.5em;
+	}
+	
 </style>
 </head>
 
 <body style="width: 250px; height: auto; overflow: hidden;">
 
-<div style="width: 250px; height: auto; margin: 0.2em; float: left;">
+<div id="maindiv" tabindex="0" style="width: 250px; height: auto; margin: 0.2em; float: left;">
 
 <img src="ocl_32.png" align="left"><h3>One-click logout</h3>
 
-<div style="">
-	<div class="" id="wait" style="margin-bottom: 1em;">
-		Logging out...
-	</div>
-</div>
+<div id="infobox" class="statstr"></div>
+
+</body>
 
 <script src="popup.js"></script>
-</body>
+
 </html>
