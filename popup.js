@@ -2,13 +2,17 @@
 var fcsdon = false;
 
 var ocllgoutSttngsArr = {
-	'Google': {'lnk': 'https://accounts.google.com/Logout', 'enabled': '0'},
-	'Mailru': {'lnk': 'https://auth.mail.ru/cgi-bin/logout?next=1&lang=ru_RU&Page=https%3A%2F%2Fmail.ru%2F%3Ffrom%3Dlogout','enabled': '0'}
+	'Google': {'lnk': 'https://accounts.google.com/Logout', 'enabled': '0', 'cks': '0',},
+	'Mailru': {'lnk': 'https://auth.mail.ru/cgi-bin/logout?next=1&lang=ru_RU&Page=https%3A%2F%2Fmail.ru%2F%3Ffrom%3Dlogout','enabled': '0', 'cks': '0',},
+	'Yandex': {'lnk': 'https://yandex.ru', 'enabled': '0', 'cks': '1',},
 };
+
+//'Linkedin': {'lnk': 'https://www.linkedin.com/m/logout', 'enabled': '0'},
 
 var currsttngs = {};
 
 
+/* SERVICE FUNCTION SECTION */
 Object.size = function(obj) {
     
 	var size = 0, key;
@@ -21,66 +25,16 @@ Object.size = function(obj) {
 };
 
 
-function popuphndlr(){
-	
-	//translation
-	//localize_menu();
-	
-	//debug
-	//chrome.storage.local.set({'oneclicklogout_settings': null}, function(){});
-	//chrome.storage.local.set({'oneclicklogout_settings': ocllgoutSttngsArr}, function(){});
-	
-	chrome.storage.local.get({'oneclicklogout_settings': {}}, function (result) {
-		
-		if ( Object.size(result.oneclicklogout_settings) == 0){
-			
-			chrome.storage.local.set({'oneclicklogout_settings': ocllgoutSttngsArr}, function(){});
-		}
-		else {
-			
-			currsttngs = result;
-			logouts = Object.size(currsttngs.oneclicklogout_settings);
-		}
-		
-		dostuff();
-	});
-	
-}
-
-
 function sleep(ms) {
   
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
-function waitnclose(){
-	
-	sleep(700).then(() => { if (!fcsdon){ window.close();} });
-}
-
-
-function docheckbox(event, name){
-	
-	if (event.target.type == "checkbox"){
-		
-		var tmp = name;
-		var tmpstate = '0'; if (event.target.checked) tmpstate = '1';
-		
-		currsttngs.oneclicklogout_settings[name]['enabled'] = tmpstate;
-			
-		chrome.storage.local.set({"oneclicklogout_settings": currsttngs.oneclicklogout_settings}, function(){
-			
-			window.location.reload(true);		
-			chrome.tabs.executeScript(null,{code: "window.location = window.location;"});
-		});
-	}
-}
-
-
+/* HTML POPUP WINDOW GEN AND HANDLE SECTION*/
 function genHtmlEl(name){
 	
-	var mndv = document.getElementById("maindiv");
+	var listbox = document.getElementById("srvcsbox");
 	
 	let tmp = document.createElement("div");
 	let tmpinnerdiv = document.createElement("div");
@@ -119,7 +73,12 @@ function genHtmlEl(name){
 	//tmp.innerHTML += "<img src=\"img/"+name+"_logo_16px.png\" class=\"logo\">";
 	tmp.appendChild(tmpinnerdiv);
 	
-	mndv.appendChild(tmp);
+	if (ret){
+		
+		listbox.insertBefore(tmp, listbox.firstChild);
+	}
+	
+	else { listbox.appendChild(tmp); }
 	
 	document.getElementById(name + "_chkbx").addEventListener("click", function(event){
 		
@@ -130,6 +89,31 @@ function genHtmlEl(name){
 }
 
 
+function waitnclose(){
+	
+	sleep(700).then(() => { if (!fcsdon){ window.close();} });
+}
+
+
+function docheckbox(event, name){
+	
+	if (event.target.type == "checkbox"){
+		
+		var tmp = name;
+		var tmpstate = '0'; if (event.target.checked) tmpstate = '1';
+		
+		currsttngs.oneclicklogout_settings[name]['enabled'] = tmpstate;
+			
+		chrome.storage.local.set({"oneclicklogout_settings": currsttngs.oneclicklogout_settings}, function(){
+			
+			window.location.reload(true);		
+			chrome.tabs.executeScript(null,{code: "window.location = window.location;"});
+		});
+	}
+}
+
+
+/* DOSTUFF SECTION */
 function dostuff(){
 	
 	document.getElementById("infobox").innerText = "Select services for fast logout";
@@ -138,14 +122,25 @@ function dostuff(){
 		
 		if (genHtmlEl(srvc)){
 			
+			let tmp = srvc.toString();
+			
 			document.getElementById("infobox").innerText = "";
-			logoutSrvc(srvc);
+			
+			if ( currsttngs.oneclicklogout_settings[srvc]['cks'] == '1' ){
+				
+				theyresofcknspecial(srvc);
+				logouts--;
+			}
+			else {
+				
+				httpLogoutSrvc(srvc);
+			}
 		}
 	}
 }
 
 
-function logoutSrvc(name){
+function httpLogoutSrvc(name){
 	
 	var xmlHttp = new XMLHttpRequest();
 	
@@ -160,49 +155,93 @@ function logoutSrvc(name){
 			if (logouts < 1) {waitnclose();}
 			
 		}
-    }	
+    }
+	
+	/* TODO: catch and alert */
+	xmlHttp.timeout = 4000;
 	
 	xmlHttp.send(null);
 }
 
 
-function logoutFunc(){
+function theyresofcknspecial(srvcname){
+	
+	var gettingAll = browser.cookies.getAll({});
+	
+	gettingAll.then( value => { listCookies(value,srvcname) });
+}
+
+
+
+/* COOKIES HANDLE SUBSECTION */
+/* TODO: search by domain, not list all every time*/
+function listCookies(cookies, srvcnm) {
+  
+	for (let cookie of cookies) {
 		
-	var xmlHttp = new XMLHttpRequest();
-	 
-	xmlHttp.open("GET", "https://accounts.google.com/Logout", true); // true for asynchronous 
-    
-	xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+		//console.log(cookie);
+		if ( (cookie.domain).includes(srvcnm.toLowerCase()) ){
 			
-			document.getElementById("google_wait").innerHTML = "Google logout done!";
-			
-			logouts--;
-			if (logouts < 1) {waitnclose();}
-			
+			removeCookie(cookie.name, currsttngs.oneclicklogout_settings[srvcnm]['lnk']);
 		}
-    }	
+	}
 	
-	xmlHttp.send(null);
+	document.getElementById(srvcnm+"_wait").innerHTML = srvcnm+" logout done!";
+}
+
+
+//debug, delete later
+function onRemoved(cookie) {
 	
-	var xmlHttp2 = new XMLHttpRequest();
-     
-	xmlHttp2.open("GET", "https://auth.mail.ru/cgi-bin/logout?next=1&lang=ru_RU&Page=https%3A%2F%2Fmail.ru%2F%3Ffrom%3Dlogout", true);
+	console.log(`Removed: ${cookie}`);
+}
+
+
+function onError(error) {
 	
-	xmlHttp2.onreadystatechange = function() { 
-        if (xmlHttp2.readyState == 4 && xmlHttp2.status == 200){ //
+	console.log(`Error removing cookie: ${error}`);
+}
+
+
+function removeCookie(cn, cu) {
+  
+	var removing = browser.cookies.remove({
+		name: cn,
+		url: cu
+	});
+	removing.then(onRemoved, onError);
+}
+
+
+/* MAIN FUNCTION */
+function popuphndlr(){
+	
+	//translation
+	//localize_menu();
+	
+	//debug
+	//chrome.storage.local.set({'oneclicklogout_settings': null}, function(){});
+	//chrome.storage.local.set({'oneclicklogout_settings': ocllgoutSttngsArr}, function(){});
+	
+	chrome.storage.local.get({'oneclicklogout_settings': {}}, function (result) {
+		
+		if ( Object.size(result.oneclicklogout_settings) == 0){
 			
-			document.getElementById("mailru_wait").innerHTML = "Mail.ru logout done!";
-			
-			logouts--;
-			if (logouts < 1) {waitnclose();}
-			
+			chrome.storage.local.set({'oneclicklogout_settings': ocllgoutSttngsArr}, function(){});
 		}
-    }	
-	
-	xmlHttp2.send(null);
+		else {
+			
+			currsttngs = result;
+			logouts = Object.size(currsttngs.oneclicklogout_settings);
+		}
+		
+		//console.log(currsttngs.oneclicklogout_settings);
+		
+		dostuff();
+	});
 	
 }
+
 
 document.getElementById("maindiv").addEventListener("mouseover", function(){ fcsdon = true; } );
 document.getElementById("maindiv").addEventListener("mouseout", function(){ fcsdon = false; } );

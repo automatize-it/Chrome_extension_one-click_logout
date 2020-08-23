@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "One-click logout",
-	"version": "0.1",
+	"version": "0.2.1",
 	"description": "Provides one-click logout from popular services",
  	"icons": {
 		"32": "ocl_32.png",
@@ -9,7 +9,16 @@
 	},
 	"permissions": [
 		"https://accounts.google.com/Logout",
-		"activeTab"
+		"https://auth.mail.ru/*",
+		"https://mail.ru/*",
+		"https://yandex.ru/*",
+		"https://*.yandex.ru/*",
+		"https://yandex.net/*",
+		"https://*.yandex.net/*",
+		"https://yastatic.ru/*",
+		"activeTab",
+		"cookies",
+		"storage"
 	],
 	"browser_action": {
 		"default_title": "One-click logout",
