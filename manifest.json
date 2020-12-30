@@ -1,11 +1,12 @@
 {
 	"manifest_version": 2,
 	"name": "One-click logout",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "Provides one-click logout from popular services",
  	"icons": {
-		"32": "ocl_32.png",
-		"64": "ocl_64.png"
+		"32": "ocl_32s.png",
+		"64": "ocl_64s.png",
+		"128": "ocl_128sf.png"
 	},
 	"permissions": [
 		"https://accounts.google.com/Logout",
@@ -21,7 +22,7 @@
 	],
 	"browser_action": {
 		"default_title": "One-click logout",
-		"default_icon": "ocl_64.png",
+		"default_icon": "ocl_64s.png",
 		"default_popup" : "popup.html"
 	},
 	
