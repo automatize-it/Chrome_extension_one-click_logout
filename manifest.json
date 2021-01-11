@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "One-click logout",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"description": "Provides one-click logout from popular services",
  	"icons": {
 		"32": "ocl_32s.png",
@@ -17,6 +17,8 @@
 		"https://yandex.net/*",
 		"https://*.yandex.net/*",
 		"https://yastatic.ru/*",
+		"https://www.facebook.com/*",
+		"https://www.linkedin.com/*",
 		"cookies",
 		"storage"
 	],

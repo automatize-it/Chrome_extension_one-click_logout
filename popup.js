@@ -5,9 +5,12 @@ var ocllgoutSttngsArr = {
 	'Google': {'lnk': 'https://accounts.google.com/Logout', 'enabled': '0', 'cks': '0',},
 	'Mailru': {'lnk': 'https://auth.mail.ru/cgi-bin/logout?next=1&lang=ru_RU&Page=https%3A%2F%2Fmail.ru%2F%3Ffrom%3Dlogout','enabled': '0', 'cks': '0',},
 	'Yandex': {'lnk': 'https://yandex.ru', 'enabled': '0', 'cks': '1',},
+	'Facebook': {'lnk': 'https://www.facebook.com/logout.php?button_location=settings&button_name=logout', 'enabled': '0', 'cks': '1',},
+	'Linkedin': {'lnk': 'https://www.linkedin.com/m/logout', 'enabled': '0', 'cks': '1',},
 };
 
 //'Linkedin': {'lnk': 'https://www.linkedin.com/m/logout', 'enabled': '0'},
+//https://www.facebook.com/logout.php?button_location=settings&button_name=logout
 
 var currsttngs = {};
 
@@ -91,7 +94,7 @@ function genHtmlEl(name){
 
 function waitnclose(){
 	
-	sleep(700).then(() => { if (!fcsdon){ window.close();} });
+	sleep(900).then(() => { if (!fcsdon){ window.close();} });
 }
 
 
