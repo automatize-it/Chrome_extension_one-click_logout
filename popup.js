@@ -7,6 +7,7 @@ var ocllgoutSttngsArr = {
 	'Yandex': {'lnk': 'https://yandex.ru', 'enabled': '0', 'cks': '1',},
 	'Facebook': {'lnk': 'https://www.facebook.com/logout.php?button_location=settings&button_name=logout', 'enabled': '0', 'cks': '1',},
 	'Linkedin': {'lnk': 'https://www.linkedin.com/m/logout', 'enabled': '0', 'cks': '1',},
+	'Vk': {'lnk': 'https://login.vk.com/?act=logout', 'enabled': '0', 'cks': '1',},
 };
 
 //'Linkedin': {'lnk': 'https://www.linkedin.com/m/logout', 'enabled': '0'},
